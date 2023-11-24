@@ -18,7 +18,8 @@ protected:
     
 private:
     void generate();
+    bool checkDigit(int row, int col, int d) const noexcept;
     
 private:
-    int matrix[9][9];
+    int board[9][9];
 };
