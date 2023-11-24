@@ -16,8 +16,7 @@ qt_add_qml_module(appQMLSudokuPuzzle
     URI QMLSudokuPuzzle
     VERSION 1.0
     QML_FILES Main.qml Cell.qml
-    SOURCES sudoku.h
-    SOURCES sudoku.cpp   
+    SOURCES sudoku.h sudoku.cpp  
 )
 
 set_target_properties(appQMLSudokuPuzzle PROPERTIES

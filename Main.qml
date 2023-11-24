@@ -4,7 +4,12 @@ import QtQuick.Dialogs
 import QtQuick.Controls 
 
 ApplicationWindow 
-{
+{ 
+    id: wnd
+    visible: true
+    minimumHeight: 640;
+    minimumWidth: 640;
+    
     menuBar: MenuBar 
     {
         Menu 
@@ -15,7 +20,7 @@ ApplicationWindow
                 text: qsTr("&New")
                 onTriggered: 
                 {
-                     //new_game()
+                     sudokuCore.onNewGame()
                 }
             }
             MenuItem 
@@ -25,15 +30,10 @@ ApplicationWindow
             }
         }
     }
-    
-    id: parent_win
-    visible: true
-    minimumHeight: 640;
-    minimumWidth: 640;
         
     Grid 
     {
-        id: sudokiGrid;
+        id: grid;
         anchors.fill: parent;
         height: parent.height; width: parent.width;
         focus: true
