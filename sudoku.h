@@ -2,6 +2,7 @@
 #include <QAbstractListModel>
 #include <QObject>
 #include "assert.h"
+#include <memory>
 
 
 class Sudoku : public QAbstractListModel
@@ -65,18 +66,23 @@ class Sudoku : public QAbstractListModel
         quint8 board[9][9];
     };
     
-    struct Cell
-    {
-        QString val     {};
-        quint8 count    {0};
-    };
-    
 public:
     explicit Sudoku(QObject *parent = 0);
     
+    ~Sudoku() = default;
+    Sudoku(const Sudoku&) = delete;
+    const Sudoku& operator=(const Sudoku&) = delete;
+    Sudoku(Sudoku&&) = delete;
+    Sudoku& operator=(Sudoku&&) = delete;
+    
+public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const override;
     QVariant data(const QModelIndex & index, int role) const override;
     
+public slots:
+    void onNewGame();
+    
 private:
-    QList<Cell> cells;
+    QList<QString>          cells;
+    std::unique_ptr<Board>  board;
 };

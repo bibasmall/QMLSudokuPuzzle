@@ -3,6 +3,7 @@ import QtQuick.Window
 import QtQuick.Dialogs
 import QtQuick.Controls 
 
+
 ApplicationWindow 
 { 
     id: wnd
@@ -18,10 +19,7 @@ ApplicationWindow
             MenuItem 
             {
                 text: qsTr("&New")
-                onTriggered: 
-                {
-                     sudokuCore.onNewGame()
-                }
+                onTriggered: sudokuModel.onNewGame()
             }
             MenuItem 
             {
@@ -30,23 +28,24 @@ ApplicationWindow
             }
         }
     }
-        
-    Grid 
+    
+    GridView 
     {
-        id: grid;
-        anchors.fill: parent;
-        height: parent.height; width: parent.width;
+        id: grid
+        anchors.fill: parent
         focus: true
+        height: parent.height; width: parent.width;
+        model: sudokuModel
         
-        columns: 9;
-        Cell{count: 0} Cell{count: 1} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}
-        Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{} Cell{}  
+        cellWidth: grid.width/9 
+        cellHeight: grid.height/9
+        
+        delegate: Column
+        {
+            width: grid.cellWidth
+            height: grid.cellHeight
+            Cell {}
+        }
     }
+       
 }
