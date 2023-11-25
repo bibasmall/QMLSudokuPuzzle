@@ -13,8 +13,8 @@ Button
     property bool readOnly: false
     property int val: 6
     
-    height: 100
-    width: 100
+    height: parent.height
+    width: parent.width
     
     background: Rectangle 
     {
