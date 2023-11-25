@@ -23,6 +23,11 @@ ApplicationWindow
             }
             MenuItem 
             {
+                text: qsTr("&Check")
+                onTriggered: sudokuModel.onCheck();
+            }
+            MenuItem 
+            {
                 text: qsTr("Ex&it")
                 onTriggered: Qt.quit();
             }
@@ -44,7 +49,7 @@ ApplicationWindow
         {
             width: grid.cellWidth
             height: grid.cellHeight
-            Cell { val : Value}
+            Cell { val : Value; readOnly: val != ""; count : Count; }
         }
     }
        

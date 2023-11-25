@@ -9,9 +9,9 @@ Button
 {
     id: cell
     
-    property int count
-    property bool readOnly: false
-    property string val
+    required property int count
+    required property bool readOnly
+    required property string val
     
     height: parent.height
     width: parent.width
@@ -19,20 +19,26 @@ Button
     background: Rectangle 
     {
         id: cellBackground
-        anchors.centerIn: parent;        
+        anchors.centerIn: parent        
         height: parent.height
         width: parent.width
         color: "white"
         
-        Rectangle {anchors.left: parent.left; height: parent.height; width: 1; color: "black"}
-        Rectangle {anchors.right: parent.right; height: parent.height; width: 1; color: "black"}
-        Rectangle {anchors.bottom: parent.bottom; height: 1; width: parent.width; color: "black"}
-        Rectangle {anchors.top: parent.top; height: 1; width: parent.width; color: "black"}
+        Rectangle {anchors.left: parent.left; height: parent.height; width: count % 3 ? 0.5 : 3; color: "black"}
+        Rectangle {anchors.right: parent.right; height: parent.height; width: (count + 1) % 9 ? 0.5 : 3; color: "black"}
+        Rectangle 
+        {
+            anchors.bottom: parent.bottom;
+            height: (Math.floor(count / 9) == 2) || Math.floor(count / 9) == 5 || Math.floor(count / 9) == 8 ? 3 : 0.5; 
+            width: parent.width 
+            color: "black"
+        }
+        Rectangle {anchors.top: parent.top; height:  Math.floor(count / 9) ? 0.5 : 3; width: parent.width; color: "black"}
     }
     TextInput 
     {
         id: txt
-        enabled: !parent.readOnly; font.bold: parent.readOnly
+        enabled: !parent.readOnly; font.bold: parent.readOnly;
         text: cell.val
         validator: RegularExpressionValidator  { regularExpression: /[1-9]+/ }
         inputMask: "9"
@@ -40,13 +46,22 @@ Button
         font.pointSize: parent.height / 2
         selectByMouse : false
         
+        function foo(a)
+        {
+            console.log(a);
+        }
+        
         onTextEdited:
         {
-            //todo
+            cell.val = txt.text
+            foo(txt.text)
+            cell.valueChanged(cell.count, cell.val)
         }
     }
     onHoveredChanged: 
     {
         cellBackground.color = hovered ? "powderblue" : "white";
     }
+    
+    signal valueChanged(int count, string val)
 }

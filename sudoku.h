@@ -76,12 +76,16 @@ public:
     Sudoku& operator=(Sudoku&&) = delete;
     
 public:
-    int rowCount(const QModelIndex & parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex & index, int role) const override;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
+    
+public:
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     
 public slots:
     void onNewGame();
+    void onCheck() const;
     
 private:
     QList<QString>          cells;

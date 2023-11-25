@@ -19,17 +19,35 @@ QVariant Sudoku::data(const QModelIndex& index, int role) const
     if ( !index.isValid() || index.row() < 0 || index.row() >= rowCount() )
         return {};
     
-    return cells[index.row()];
+    QVariant res{};
+    if(role == Qt::UserRole + 1)
+        res = cells[index.row()];
+    if(role == Qt::UserRole + 2)
+        res = index.row();
+    
+    return res;
 }
 
 QHash<int, QByteArray> Sudoku::roleNames() const
 {
     QHash<int, QByteArray> roles;
     roles[Qt::UserRole + 1] = "Value";
+    roles[Qt::UserRole + 2] = "Count";
     return roles;
+}
+
+bool Sudoku::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    qDebug() << "Oh yes we got here";
+    return true;
 }
 
 void Sudoku::onNewGame()
 {
     qDebug() << "New game pressed";
+}
+
+void Sudoku::onCheck() const
+{
+    qDebug() << "Check pressed";
 }
