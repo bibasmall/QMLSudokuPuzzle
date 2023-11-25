@@ -49,7 +49,17 @@ ApplicationWindow
         {
             width: grid.cellWidth
             height: grid.cellHeight
-            Cell { val : Value; readOnly: val != ""; count : Count; }
+            Cell { id: cell; val : Value; readOnly: val != ""; count : Count; }
+            
+             Connections {
+                 target: cell
+                 function onValueChanged(value)
+                 {
+                     console.log(value);
+                     console.log(cell.count);
+                     model.Value = value;
+                 }
+             }
         }
     }
        

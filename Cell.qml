@@ -45,17 +45,10 @@ Button
         anchors.centerIn: parent
         font.pointSize: parent.height / 2
         selectByMouse : false
-        
-        function foo(a)
-        {
-            console.log(a);
-        }
-        
+               
         onTextEdited:
         {
-            cell.val = txt.text
-            foo(txt.text)
-            cell.valueChanged(cell.count, cell.val)
+            cell.valueChanged(txt.text)
         }
     }
     onHoveredChanged: 
@@ -63,5 +56,5 @@ Button
         cellBackground.color = hovered ? "powderblue" : "white";
     }
     
-    signal valueChanged(int count, string val)
+    signal valueChanged(string val)
 }
