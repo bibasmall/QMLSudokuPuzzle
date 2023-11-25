@@ -20,7 +20,7 @@ class Sudoku : public QAbstractListModel
         
         void set(quint8 count, quint8 val)
         {
-            assert(val > 0 && val <= 9 && count < 81);
+            assert(val >= 0 && val <= 9 && count < 81);
             board[count / 9][count % 9] = val;
         }
         quint8 get(quint8 count)

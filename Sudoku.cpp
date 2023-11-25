@@ -38,7 +38,10 @@ QHash<int, QByteArray> Sudoku::roleNames() const
 
 bool Sudoku::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    qDebug() << "Oh yes we got here";
+    if (!hasIndex(index.row(), index.column(), index.parent()) || !value.isValid())
+        return false;
+    board->set(index.row(), value.toString().toInt());
+    emit dataChanged(index, index, { role } );
     return true;
 }
 
