@@ -44,7 +44,7 @@ ApplicationWindow
         {
             width: grid.cellWidth
             height: grid.cellHeight
-            Cell {}
+            Cell { val : Value}
         }
     }
        

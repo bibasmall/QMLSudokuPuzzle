@@ -11,7 +11,7 @@ Button
     
     property int count
     property bool readOnly: false
-    property int val: 6
+    property string val
     
     height: parent.height
     width: parent.width
@@ -33,12 +33,11 @@ Button
     {
         id: txt
         enabled: !parent.readOnly; font.bold: parent.readOnly
-        text: cell.val > 0 ? val : " "
+        text: cell.val
         validator: RegularExpressionValidator  { regularExpression: /[1-9]+/ }
         inputMask: "9"
         anchors.centerIn: parent
-        font.pointSize: parent.height / 3
-        //verticalAlignment: parent.AlignVCenter; horizontalAlignment: parent.AlignHCenter
+        font.pointSize: parent.height / 2
         selectByMouse : false
         
         onTextEdited:

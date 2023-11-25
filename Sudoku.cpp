@@ -22,6 +22,13 @@ QVariant Sudoku::data(const QModelIndex& index, int role) const
     return cells[index.row()];
 }
 
+QHash<int, QByteArray> Sudoku::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    roles[Qt::UserRole + 1] = "Value";
+    return roles;
+}
+
 void Sudoku::onNewGame()
 {
     qDebug() << "New game pressed";
