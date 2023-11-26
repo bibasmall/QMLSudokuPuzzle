@@ -28,6 +28,11 @@ ApplicationWindow
             }
             MenuItem 
             {
+                text: qsTr("&Solve")
+                onTriggered: sudokuModel.onSolve();
+            }
+            MenuItem 
+            {
                 text: qsTr("Ex&it")
                 onTriggered: Qt.quit();
             }
@@ -54,6 +59,15 @@ ApplicationWindow
              Connections {
                  target: cell
                  function onValueChanged(value)
+                 {
+                     console.log(value);
+                     console.log(cell.count);
+                     model.Value = value;
+                 }
+             }
+             Connections {
+                 target: sudokuModel
+                 function onDataChanged(value)
                  {
                      console.log(value);
                      console.log(cell.count);

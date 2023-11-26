@@ -3,6 +3,7 @@
 #include <QObject>
 #include "assert.h"
 #include <memory>
+#include <algorithm>
 
 
 class Sudoku : public QAbstractListModel
@@ -29,8 +30,55 @@ class Sudoku : public QAbstractListModel
             return board[count / 9][count % 9];
         }
         
+    public:
+        bool checkBoard() const noexcept
+        {
+            for(int i = 0; i < 9; ++i)
+            {
+                if(std::accumulate(&board[i][0], &board[i][8], 0) != 45 || std::accumulate(&board[0][i], &board[8][i], 0) != 45)
+                    return false;
+                
+                if((std::accumulate(&board[i / 3][i % 3], &board[i / 3][i % 3 + 2], 0)          +
+                    std::accumulate(&board[i / 3 + 1][i % 3], &board[i / 3+1][i % 3 + 2], 0)    +
+                    std::accumulate(&board[i / 3 + 2][i % 3], &board[i / 3+2][i % 3 + 2], 0)) != 45)
+                    return false;
+            }
+            
+            return true;
+        }
+        void solve()
+        {
+            std::function<bool(int)> solver;
+            
+            solver = [this, &solver](int count) {
+                if (count == 81)
+                    return true;
+                
+                int i = count / 9, j = count % 9;
+                
+                if (board[i][j] != 0)
+                    return solver(count + 1);
+                
+                for (int d = 1; d <= 9; ++d)
+                {
+                    if (!checkDigit(i, j, d))
+                        continue;
+                    
+                    board[i][j] = d;
+                    if (solver(count + 1))
+                        return true;
+                    
+                    board[i][j] = 0;
+                }
+                
+                return false;
+            };
+            
+            solver(0);
+        }
+        
     private:
-        void generate()
+        void generate() noexcept
         {
             for(int clues = (rand() % 4) + 17; clues; --clues)
             {
@@ -85,6 +133,7 @@ public:
     
 public slots:
     void onNewGame();
+    void onSolve();
     void onCheck() const;
     
 private:

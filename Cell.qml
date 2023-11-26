@@ -42,13 +42,22 @@ Button
         text: cell.val
         validator: RegularExpressionValidator  { regularExpression: /[1-9]+/ }
         inputMask: "9"
+        maximumLength: 1
         anchors.centerIn: parent
         font.pointSize: parent.height / 2
         selectByMouse : false
+        
+        anchors.fill: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
                
         onTextEdited:
         {
             cell.valueChanged(txt.text)
+        }
+        onFocusChanged: 
+        {
+            cursorPosition = 0
         }
     }
     onHoveredChanged: 

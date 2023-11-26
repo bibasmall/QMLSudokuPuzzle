@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
     Sudoku s{};
     QQmlContext* rootContext = engine.rootContext();
     rootContext->setContextProperty("sudokuModel", &s);
-    
     engine.load(url);
     
     return app.exec();

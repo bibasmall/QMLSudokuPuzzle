@@ -41,7 +41,7 @@ bool Sudoku::setData(const QModelIndex &index, const QVariant &value, int role)
     if (!hasIndex(index.row(), index.column(), index.parent()) || !value.isValid())
         return false;
     board->set(index.row(), value.toString().toInt());
-    emit dataChanged(index, index, { role } );
+    //emit dataChanged(index, index, { role } );
     return true;
 }
 
@@ -50,7 +50,17 @@ void Sudoku::onNewGame()
     qDebug() << "New game pressed";
 }
 
+void Sudoku::onSolve()
+{
+    qDebug() << "Solve pressed";
+    board->solve();
+    
+}
+
 void Sudoku::onCheck() const
 {
-    qDebug() << "Check pressed";
+    if(board->checkBoard())
+        qDebug() << "Well done";
+    else
+        qDebug() << "Wrong sudoku";
 }
