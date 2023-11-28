@@ -33,6 +33,7 @@ QHash<int, QByteArray> Sudoku::roleNames() const
     QHash<int, QByteArray> roles;
     roles[Qt::UserRole + 1] = "Value";
     roles[Qt::UserRole + 2] = "Count";
+    roles[Qt::UserRole + 3] = "ValueFromBoard";
     return roles;
 }
 
@@ -40,8 +41,17 @@ bool Sudoku::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!hasIndex(index.row(), index.column(), index.parent()) || !value.isValid())
         return false;
-    board->set(index.row(), value.toString().toInt());
-    //emit dataChanged(index, index, { role } );
+    
+    if(role == Role::value)
+    {
+        board->set(index.row(), value.toString().toInt());
+        //cells[index.row()] = value.toString(); пригодится, чтобы очистить и решить правильно
+    }
+    else if(role == Role::valueFromBoard)
+    {
+        cells[index.row()] = value.toString();
+        emit dataChanged(index, index, { Role::value } );
+    }
     return true;
 }
 
@@ -54,7 +64,13 @@ void Sudoku::onSolve()
 {
     qDebug() << "Solve pressed";
     board->solve();
-    
+    for(int i = 0; i < 9; ++i)
+    {
+        for(int j = 0; j < 9; ++j)
+            if(cells.at(9*i + j).toInt() != board->get(9*i + j))
+                setData(index(9*i + j), QString::number(board->get(9*i + j)), Role::valueFromBoard);
+    }
+    emit boardChangedFromInside();
 }
 
 void Sudoku::onCheck() const

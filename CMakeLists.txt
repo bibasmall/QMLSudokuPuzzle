@@ -27,9 +27,9 @@ target_link_libraries(appQMLSudokuPuzzle
     PRIVATE Qt6::Quick
 )
 
-include(GNUInstallDirs)
-install(TARGETS appQMLSudokuPuzzle
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+#include(GNUInstallDirs)
+#install(TARGETS appQMLSudokuPuzzle
+#    BUNDLE DESTINATION .
+#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#)

@@ -56,22 +56,23 @@ ApplicationWindow
             height: grid.cellHeight
             Cell { id: cell; val : Value; readOnly: val != ""; count : Count; }
             
-             Connections {
+             Connections 
+             {
                  target: cell
-                 function onValueChanged(value)
+                 function onValueChanged(val)
                  {
-                     console.log(value);
+                     console.log(val);
                      console.log(cell.count);
-                     model.Value = value;
+                     model.Value = val;
                  }
              }
-             Connections {
+             Connections 
+             {
                  target: sudokuModel
-                 function onDataChanged(value)
+                 function onBoardChangedFromInside(val)
                  {
-                     console.log(value);
-                     console.log(cell.count);
-                     model.Value = value;
+                     grid.update()
+                     //refresh view, not cell
                  }
              }
         }

@@ -1,9 +1,9 @@
 #pragma once
 #include <QAbstractListModel>
 #include <QObject>
+#include <algorithm>
 #include "assert.h"
 #include <memory>
-#include <algorithm>
 
 
 class Sudoku : public QAbstractListModel
@@ -114,6 +114,8 @@ class Sudoku : public QAbstractListModel
         quint8 board[9][9];
     };
     
+    enum Role { value = Qt::UserRole + 1, count = Qt::UserRole + 2, valueFromBoard = Qt::UserRole + 3 };
+    
 public:
     explicit Sudoku(QObject *parent = 0);
     
@@ -136,7 +138,11 @@ public slots:
     void onSolve();
     void onCheck() const;
     
+signals:
+    void boardChangedFromInside();
+    
 private:
-    QList<QString>          cells;
+    QVector<QString>        cells;
     std::unique_ptr<Board>  board;
+    bool                    solved = false;
 };
