@@ -15,26 +15,42 @@ ApplicationWindow
     {
         Menu 
         {
-            title: qsTr("&Game")
+            title: "Game"
             MenuItem 
             {
-                text: qsTr("&New")
+                id: newMenu
+                text: "New"
                 onTriggered: sudokuModel.onNewGame()
             }
             MenuItem 
             {
-                text: qsTr("&Check")
+                text: "Check"
                 onTriggered: sudokuModel.onCheck();
             }
             MenuItem 
             {
-                text: qsTr("&Solve")
-                onTriggered: sudokuModel.onSolve();
+                id: solveMenu
+                text: "Solve"
+                onTriggered: 
+                {
+                    sudokuModel.onSolve(); 
+                    solveMenu.enabled = false
+                }
             }
             MenuItem 
             {
-                text: qsTr("Ex&it")
+                text: "Exit"
                 onTriggered: Qt.quit();
+            }
+            
+            Connections 
+            {
+                target: newMenu
+                function onTriggered()
+                {
+                    solveMenu.enabled = true
+                }
+                
             }
         }
     }
@@ -72,7 +88,6 @@ ApplicationWindow
                  function onBoardChangedFromInside(val)
                  {
                      grid.update()
-                     //refresh view, not cell
                  }
              }
         }

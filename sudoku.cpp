@@ -4,6 +4,7 @@
 
 Sudoku::Sudoku(QObject *parent) : QAbstractListModel(parent), board(std::make_unique<Board>()), cells(81, "")
 {
+    srand(time(NULL));
     start();
 }
 
@@ -41,15 +42,13 @@ bool Sudoku::setData(const QModelIndex &index, const QVariant &value, int role)
         return false;
     
     if(role == Role::value)
-    {
         board->set(index.row(), value.toString().toInt());
-        //cells[index.row()] = value.toString(); пригодится, чтобы очистить и решить правильно
-    }
     else if(role == Role::valueFromBoard)
     {
         cells[index.row()] = value.toString();
         emit dataChanged(index, index, { Role::value } );
     }
+    
     return true;
 }
 

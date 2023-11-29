@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
     const QUrl url(u"qrc:/QMLSudokuPuzzle/Main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
     
-    srand(time(NULL));
     Sudoku s{};
     QQmlContext* rootContext = engine.rootContext();
     rootContext->setContextProperty("sudokuModel", &s);

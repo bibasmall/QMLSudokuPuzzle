@@ -154,5 +154,4 @@ private:
 private:
     QVector<QString>        cells;
     std::unique_ptr<Board>  board;
-    bool                    solved = false;
 };
