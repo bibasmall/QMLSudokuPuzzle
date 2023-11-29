@@ -2,11 +2,9 @@
 #include "sudoku.h"
 
 
-Sudoku::Sudoku(QObject *parent) : QAbstractListModel(parent), board(std::make_unique<Board>())
+Sudoku::Sudoku(QObject *parent) : QAbstractListModel(parent), board(std::make_unique<Board>()), cells(81, "")
 {
-    cells.reserve(81);
-    for(int i = 0; i < 81; ++i)
-        cells.push_back(board->get(i) ? QString::number(board->get(i)) : "");
+    start();
 }
 
 int Sudoku::rowCount(const QModelIndex& parent) const
@@ -57,7 +55,7 @@ bool Sudoku::setData(const QModelIndex &index, const QVariant &value, int role)
 
 void Sudoku::onNewGame()
 {
-    qDebug() << "New game pressed";
+    start();
 }
 
 void Sudoku::onSolve()
@@ -79,4 +77,20 @@ void Sudoku::onCheck() const
         qDebug() << "Well done";
     else
         qDebug() << "Wrong sudoku";
+}
+
+void Sudoku::start()
+{
+    board->start();
+    for(int i = 0; i < 81; ++i)
+        setData(index(i), board->get(i) ? QString::number(board->get(i)) : "", Role::valueFromBoard);
+    
+    emit boardChangedFromInside();
+}
+
+void Sudoku::restart()
+{
+    for(auto& e : cells)
+        e = "";
+    start();
 }

@@ -16,12 +16,8 @@ class Sudoku : public QAbstractListModel
         Board()
         {
             std::memset(&board, 0, sizeof(board));
-            generate();
         }
-        ~Board()
-        {
-            free(board);
-        }
+        ~Board() = default;
         
         void set(quint8 count, quint8 val)
         {
@@ -79,6 +75,12 @@ class Sudoku : public QAbstractListModel
             };
             
             solver(0);
+        }
+        
+        void start()
+        {
+            std::memset(&board, 0, sizeof(board));
+            generate();
         }
         
     private:
@@ -144,6 +146,10 @@ public slots:
     
 signals:
     void boardChangedFromInside();
+    
+private:
+    void start();
+    void restart();
     
 private:
     QVector<QString>        cells;
