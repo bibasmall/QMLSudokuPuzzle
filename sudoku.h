@@ -18,6 +18,10 @@ class Sudoku : public QAbstractListModel
             std::memset(&board, 0, sizeof(board));
             generate();
         }
+        ~Board()
+        {
+            free(board);
+        }
         
         void set(quint8 count, quint8 val)
         {
