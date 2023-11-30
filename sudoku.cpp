@@ -2,6 +2,113 @@
 #include "sudoku.h"
 
 
+void Sudoku::Board::set(quint8 count, quint8 val)
+{
+    assert(val >= 0 && val <= 9 && count < 81);
+    board[count / 9][count % 9] = val;
+}
+
+quint8 Sudoku::Board::get(quint8 count)
+{
+    assert(count < 81);
+    return board[count / 9][count % 9];
+}
+
+bool Sudoku::Board::checkBoard() const noexcept
+{
+    for(int i = 0; i < 9; ++i)
+    {
+        auto rowSum = std::accumulate(&board[i][0], &board[i][8]+1, 0);
+        if(rowSum != 45)
+            return false;
+        
+        unsigned row = (i / 3) * 3, col = (i % 3) * 3; 
+        auto square3x3Sum = std::accumulate(&board[row][col], &board[row][col + 2]+1, 0) +
+                            std::accumulate(&board[row+1][col], &board[row+1][col + 2]+1, 0) +
+                            std::accumulate(&board[row+2][col], &board[row+2][col + 2]+1, 0);
+        if(square3x3Sum != 45)
+            return false;
+        
+        auto colSum = 0;
+        for(int j = 0; j <= 8; ++j)
+            colSum+=board[j][i];
+        if(colSum != 45)
+            return false;
+    }
+    
+    return true;
+}
+
+void Sudoku::Board::solve()
+{
+    std::function<bool(int)> solver;
+    
+    solver = [this, &solver](int count) {
+        if (count == 81)
+            return true;
+        
+        int i = count / 9, j = count % 9;
+        
+        if (board[i][j] != 0)
+            return solver(count + 1);
+        
+        for (int d = 1; d <= 9; ++d)
+        {
+            if (!checkDigit(i, j, d))
+                continue;
+            
+            board[i][j] = d;
+            if (solver(count + 1))
+                return true;
+            
+            board[i][j] = 0;
+        }
+        
+        return false;
+    };
+    
+    solver(0);
+}
+
+void Sudoku::Board::start()
+{
+    std::memset(&board, 0, sizeof(board));
+    generate();
+}
+
+void Sudoku::Board::generate() noexcept
+{
+    for(int clues = (rand() % 4) + 17; clues; --clues)
+    {
+        quint8 i = 0;
+        quint8 j = 0;
+        
+        while(board[i][j] != 0)
+        {
+            i = rand() % 8;
+            j = rand() % 8;
+        }
+        
+        for(auto d = rand() % 8 + 1; ; d = rand() % 8 + 1)
+        {
+            if(checkDigit(i, j, d))
+            {
+                board[i][j] = d;
+                break;
+            }
+        }
+    }
+}
+
+bool Sudoku::Board::checkDigit(quint8 row, quint8 col, quint8 d) const noexcept
+{
+    bool result = true;
+    for (int i = 0; i < 9 && result; ++i)
+        result = !(board[row][i] == d || board[i][col] == d || board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == d);
+    
+    return result;
+}
+
 Sudoku::Sudoku(QObject *parent) : QAbstractListModel(parent), board(std::make_unique<Board>()), cells(81, "")
 {
     srand(time(NULL));
