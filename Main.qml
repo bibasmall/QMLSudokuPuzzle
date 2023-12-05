@@ -11,6 +11,12 @@ ApplicationWindow
     minimumHeight: 640;
     minimumWidth: 640;
     
+    MessageDialog 
+    {
+        id: msgbox
+        buttons: MessageDialog.Ok
+    }
+    
     menuBar: MenuBar 
     {
         Menu 
@@ -89,6 +95,13 @@ ApplicationWindow
                  {
                      grid.update()
                  }
+                 
+                 function onSolved(isSolved)
+                 {
+                     msgbox.text = isSolved ? "Sudoku solved" : "Wrong sudoku"
+                     msgbox.open()
+                 }
+                 
              }
         }
     }

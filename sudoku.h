@@ -2,7 +2,6 @@
 #include <QAbstractListModel>
 #include <QObject>
 #include <algorithm>
-#include "assert.h"
 #include <memory>
 
 
@@ -12,6 +11,10 @@ class Sudoku : public QAbstractListModel
     
     class Board
     {
+    public:
+        static const quint8 BOARD_ROW = 9;
+        static constexpr quint8 NUMBER_OF_CELLS = BOARD_ROW * BOARD_ROW;
+        
     public:
         Board() = default;
         ~Board() = default;
@@ -29,7 +32,7 @@ class Sudoku : public QAbstractListModel
         bool checkDigit(quint8 row, quint8 col, quint8 d) const noexcept;
         
     private:
-        std::array<std::array<qint8, 9>, 9> board{};
+        std::array<std::array<qint8, BOARD_ROW>, BOARD_ROW> board{};
     };
     
     enum Role { value = Qt::UserRole + 1, count = Qt::UserRole + 2, valueFromBoard = Qt::UserRole + 3 };
@@ -57,7 +60,8 @@ public slots:
     void onCheck() const;
     
 signals:
-    void boardChangedFromInside();
+    void boardChangedFromInside() const;
+    void solved(bool) const;
     
 private:
     void start();

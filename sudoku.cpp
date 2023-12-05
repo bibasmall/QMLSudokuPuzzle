@@ -1,38 +1,43 @@
 #include <QQmlProperty>
+#include "assert.h"
 #include "sudoku.h"
 
 
 void Sudoku::Board::set(quint8 count, quint8 val)
 {
-    assert(val >= 0 && val <= 9 && count < 81);
-    board[count / 9][count % 9] = val;
+    assert(val >= 0 && val <= BOARD_ROW && count < NUMBER_OF_CELLS);
+    board[count / BOARD_ROW][count % BOARD_ROW] = val;
 }
 
 quint8 Sudoku::Board::get(quint8 count)
 {
-    assert(count < 81);
-    return board[count / 9][count % 9];
+    assert(count < NUMBER_OF_CELLS);
+    return board[count / BOARD_ROW][count % BOARD_ROW];
 }
 
 bool Sudoku::Board::checkBoard() const noexcept
 {
-    for(int i = 0; i < 9; ++i)
+    const int expectedSum = 45;
+    const int last = BOARD_ROW - 1;
+    
+    for(int i = 0; i < BOARD_ROW; ++i)
     {
-        auto rowSum = std::accumulate(&board[i][0], &board[i][8]+1, 0);
-        if(rowSum != 45)
+        auto rowSum = std::accumulate(&board[i][0], &board[i][last]+ 1, 0);
+        if(rowSum != expectedSum)
             return false;
         
         unsigned row = (i / 3) * 3, col = (i % 3) * 3; 
-        auto square3x3Sum = std::accumulate(&board[row][col], &board[row][col + 2]+1, 0) +
-                            std::accumulate(&board[row+1][col], &board[row+1][col + 2]+1, 0) +
-                            std::accumulate(&board[row+2][col], &board[row+2][col + 2]+1, 0);
-        if(square3x3Sum != 45)
+        auto square3x3Sum = std::accumulate(&board[row][col], &board[row][col + 2] + 1, 0) +
+                            std::accumulate(&board[row+1][col], &board[row+1][col + 2]+ 1, 0) +
+                            std::accumulate(&board[row+2][col], &board[row+2][col + 2]+ 1, 0);
+        
+        if(square3x3Sum != expectedSum)
             return false;
         
         auto colSum = 0;
-        for(int j = 0; j <= 8; ++j)
+        for(int j = 0; j <= last; ++j)
             colSum+=board[j][i];
-        if(colSum != 45)
+        if(colSum != expectedSum)
             return false;
     }
     
@@ -44,15 +49,15 @@ void Sudoku::Board::solve()
     std::function<bool(int)> solver;
     
     solver = [this, &solver](int count) {
-        if (count == 81)
+        if (count == NUMBER_OF_CELLS)
             return true;
         
-        int i = count / 9, j = count % 9;
+        int i = count / BOARD_ROW, j = count % BOARD_ROW;
         
         if (board[i][j] != 0)
             return solver(count + 1);
         
-        for (int d = 1; d <= 9; ++d)
+        for (int d = 1; d <= BOARD_ROW; ++d)
         {
             if (!checkDigit(i, j, d))
                 continue;
@@ -103,13 +108,13 @@ void Sudoku::Board::generate() noexcept
 bool Sudoku::Board::checkDigit(quint8 row, quint8 col, quint8 d) const noexcept
 {
     bool result = true;
-    for (int i = 0; i < 9 && result; ++i)
+    for (int i = 0; i < BOARD_ROW && result; ++i)
         result = !(board[row][i] == d || board[i][col] == d || board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == d);
     
     return result;
 }
 
-Sudoku::Sudoku(QObject *parent) : QAbstractListModel(parent), board(std::make_unique<Board>()), cells(81, "")
+Sudoku::Sudoku(QObject *parent) : QAbstractListModel(parent), board(std::make_unique<Board>()), cells(Board::NUMBER_OF_CELLS, "")
 {
     srand(time(NULL));
     start();
@@ -168,27 +173,24 @@ void Sudoku::onSolve()
 {
     qDebug() << "Solve pressed";
     board->solve();
-    for(int i = 0; i < 9; ++i)
+    for(int i = 0; i < Board::BOARD_ROW; ++i)
     {
-        for(int j = 0; j < 9; ++j)
-            if(cells.at(9*i + j).toInt() != board->get(9*i + j))
-                setData(index(9*i + j), QString::number(board->get(9*i + j)), Role::valueFromBoard);
+        for(int j = 0; j < Board::BOARD_ROW; ++j)
+            if(cells.at(Board::BOARD_ROW * i + j).toInt() != board->get(Board::BOARD_ROW * i + j))
+                setData(index(Board::BOARD_ROW*i + j), QString::number(board->get(Board::BOARD_ROW * i + j)), Role::valueFromBoard);
     }
     emit boardChangedFromInside();
 }
 
 void Sudoku::onCheck() const
 {
-    if(board->checkBoard())
-        qDebug() << "Well done";
-    else
-        qDebug() << "Wrong sudoku";
+    emit solved(board->checkBoard());
 }
 
 void Sudoku::start()
 {
     board->start();
-    for(int i = 0; i < 81; ++i)
+    for(int i = 0; i < Board::NUMBER_OF_CELLS; ++i)
         setData(index(i), board->get(i) ? QString::number(board->get(i)) : "", Role::valueFromBoard);
     
     emit boardChangedFromInside();
